@@ -7,7 +7,7 @@ const postTodo = async (req: Request, res: Response) => {
       title: req.body.title,
       description: req.body.description,
       notes: req.body.notes,
-      setTime: new Date().getTime(),
+      setTime: Date.now(),
       isComplete: false,
     });
 
@@ -29,7 +29,7 @@ const updateTodo = async (req: Request, res: Response) => {
         title: req.body.title || isTodo.title,
         description: req.body.description || isTodo.description,
         notes: req.body.notes || isTodo.notes,
-        updateTime: new Date().getTime(),
+        updateTime: Date.now(),
       },
       { new: true }
     );
@@ -45,11 +45,15 @@ const updateTodo = async (req: Request, res: Response) => {
 
 const completeTodo = async (req: Request, res: Response) => {
   try {
-    const isTodo = await Todo.findById(req.params.id);
+    const isTodo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      {
+        isComplete: true,
+        updateTime: Date.now(),
+      },
+      { new: true }
+    );
     if (!isTodo) return res.status(404).json({ message: "Todo not found!" });
-    isTodo.isComplete = true;
-    isTodo.save();
-
     return res
       .status(200)
       .json({ message: "Todo updated succesfully", Data: isTodo });

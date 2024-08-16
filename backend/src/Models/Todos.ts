@@ -13,10 +13,10 @@ const todoSchema = new mongoose.Schema({
     type: String,
   },
   updateTime: {
-    type: String,
+    type: Date,
   },
   setTime: {
-    type: String,
+    type: Date,
   },
   isComplete: {
     type: Boolean,
