@@ -7,5 +7,6 @@ router.post("/post", authorization, Todo.postTodo);
 router.put("/update/:id", authorization, Todo.updateTodo);
 router.put("/complete/:id", authorization, Todo.completeTodo);
 router.delete("/delete/:id", authorization, Todo.deleteTodo);
+router.get("/get", authorization, Todo.getTodosOfUser);
 
 export default router;

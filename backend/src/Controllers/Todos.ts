@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import Todo from "../Models/Todos";
+import User from "../Models/Auth";
 
-const postTodo = async (req: Request, res: Response) => {
+const postTodo = async (req: any, res: Response) => {
   try {
     const newTodo = new Todo({
       title: req.body.title,
@@ -12,6 +13,10 @@ const postTodo = async (req: Request, res: Response) => {
     });
 
     await newTodo.save();
+    const isUser = await User.findOne({ email: req.user.email });
+    if (!isUser) return res.status(404).json({ message: "User not found!" });
+    isUser.todos.push(newTodo._id);
+    await isUser.save();
     return res.status(200).json({ message: "Todo added", Data: newTodo });
   } catch (error) {
     return error;
@@ -74,4 +79,22 @@ const deleteTodo = async (req: Request, res: Response) => {
   }
 };
 
-export default { postTodo, updateTodo, completeTodo, deleteTodo };
+const getTodosOfUser = async (req: any, res: Response) => {
+  try {
+    const isUser = await User.findOne({ email: req.user.email }).populate(
+      "todos"
+    );
+    if (!isUser) return res.status(404).json({ message: "User not found" });
+    return res.status(200).json({ data: isUser.todos });
+  } catch (error) {
+    return error;
+  }
+};
+
+export default {
+  postTodo,
+  updateTodo,
+  completeTodo,
+  deleteTodo,
+  getTodosOfUser,
+};
