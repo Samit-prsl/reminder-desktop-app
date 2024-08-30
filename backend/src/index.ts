@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import auth from "./Routes/Auth";
@@ -10,6 +11,7 @@ const app = express();
 const PORT: string | number = process.env.PORT || 5000;
 const mongoUri: any = process.env.MONGOURI!;
 
+app.use(cors());
 app.use(express.json());
 app.use("/auth", auth);
 app.use("/todo", Todos);
